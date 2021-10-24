@@ -30,7 +30,8 @@ dependencies {
 		 "org.webjars.bowergithub.vaadin", "org.webjars.bowergithub.webcomponents"]
 				.forEach { group -> exclude(group: group) }
 	}
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.projectlombok:lombok:1.18.20'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
