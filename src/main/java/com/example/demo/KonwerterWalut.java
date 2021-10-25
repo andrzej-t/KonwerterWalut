@@ -9,5 +9,4 @@ public class KonwerterWalut {
 	public static void main(String[] args) {
 		SpringApplication.run(KonwerterWalut.class, args);
 	}
-
 }

@@ -1,47 +1,92 @@
 package com.example.demo.views;
 
+import com.example.demo.client.BackendClient;
+import com.example.demo.domain.Currency;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route("")
 @PWA(name = "Konwereter Walut", shortName = "Konwerter Walut")
 public class MainView extends VerticalLayout {
 
+    @Autowired
+    BackendClient backendClient;
+    @Autowired
+    Currency currency;
+
     HorizontalLayout layout1 = new HorizontalLayout();
     Component component1 = new Text("KONWERTER WALUT");
 
     HorizontalLayout layout2 = new HorizontalLayout();
-    IntegerField integerField1 = new IntegerField();
-    Select<String> labelSelect1 = new Select<>();
+    IntegerField insertField = new IntegerField();
+    Select<String> currencyTwoSelect = new Select<>();
     Select<String> labelSelect2 = new Select<>();
-    Button button1 = new Button();
+    Button executeBtn = new Button();
+    TextField resultField = new TextField();
 
-    public MainView() {
+    Grid<Currency> grid1 = new Grid<>(Currency.class);
+
+    HorizontalLayout layout3 = new HorizontalLayout();
+    Component component2 = new Text("Wszystkie podane kursy i wyliczenia opierają się na danych udostępnionych przez NBP");
+
+    public MainView(BackendClient backendClient) {
+        this.backendClient=backendClient;
 
         layout1.setWidth("100%");
-        layout1.getStyle().set("border", "1px solid #9E9E9E");
+        layout1.getStyle().set("border", "1px solid #52565b");
+        layout1.getElement().getStyle().set("padding", "10px");
+        layout1.getElement().getStyle().set("font-size", "24px");
         layout1.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         layout1.add(component1);
         add(layout1);
 
         layout2.setWidth("100%");
         layout2.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        integerField1.setLabel("Wprowadź kwotę: ");
-        labelSelect1.setLabel("Konwertuj z: ");
+        insertField.setLabel("Wprowadź kwotę: ");
+        currencyTwoSelect.setLabel("Konwertuj z: ");
         labelSelect2.setLabel("Konwertuj na: ");
-        button1.setText("Przelicz");
-        button1.getElement().getStyle().set("margin", "36px 0px 0px 15px");
-        layout2.add(integerField1, labelSelect1, labelSelect2, button1);
+        executeBtn.setText("Przelicz");
+        executeBtn.getElement().getStyle().set("margin", "36px 0px 0px 15px");
+        executeBtn.getElement().getStyle()
+                .set("color", "#ffffff")
+                .set("background", "#33ab4b");
+        resultField.setLabel("Wynik: ");
+        resultField.setReadOnly(true);
+        layout2.add(insertField, currencyTwoSelect, labelSelect2, executeBtn, resultField);
         add(layout2);
-    }
 
-//    getButtonInside2().getElement().getStyle().set("margin", "20% 30% 10% 38%");
+        grid1.getStyle().set("border", "1px solid #52565b");
+        grid1.setColumns("currencyName", "currencySymbol", "exchangeRate", "percentChange", "zlotyChange");
+//        grid1.getColumnByKey("flag").setHeader("flag");
+        grid1.addComponentColumn(image -> new Image(backendClient.getImageAdress(), "alt text")).setHeader("");
+        grid1.getColumnByKey("currencyName").setHeader("Nazwa waluty");
+        grid1.getColumnByKey("currencySymbol").setHeader("Symbol waluty");
+        grid1.getColumnByKey("exchangeRate").setHeader("Kurs");
+        grid1.getColumnByKey("percentChange").setHeader("Zmiana (%)");
+        grid1.getColumnByKey("zlotyChange").setHeader("Zmiana (zł)");
+        grid1.setItems(backendClient.fetchAllCurrencies());
+
+
+        add(grid1);
+
+        layout3.setWidth("100%");
+        layout3.getStyle().set("border", "1px solid #52565b");
+        layout3.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        layout3.getElement().getStyle().set("padding", "10px");
+        layout3.getElement().getStyle().set("font-size", "12px");
+        layout3.add(component2);
+        add(layout3);
+    }
 }
