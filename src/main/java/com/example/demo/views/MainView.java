@@ -6,7 +6,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,6 +16,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SuppressWarnings("SpringJavaAutowiredMembersInspection")
 @Route("")
 @PWA(name = "Konwereter Walut", shortName = "Konwerter Walut")
 public class MainView extends VerticalLayout {
@@ -69,16 +69,13 @@ public class MainView extends VerticalLayout {
 
         grid1.getStyle().set("border", "1px solid #52565b");
         grid1.setColumns("currencyName", "currencySymbol", "exchangeRate", "percentChange", "zlotyChange");
-//        grid1.getColumnByKey("flag").setHeader("flag");
-        grid1.addComponentColumn(image -> new Image(backendClient.getImageAdress(), "alt text")).setHeader("");
         grid1.getColumnByKey("currencyName").setHeader("Nazwa waluty");
         grid1.getColumnByKey("currencySymbol").setHeader("Symbol waluty");
         grid1.getColumnByKey("exchangeRate").setHeader("Kurs");
         grid1.getColumnByKey("percentChange").setHeader("Zmiana (%)");
         grid1.getColumnByKey("zlotyChange").setHeader("Zmiana (zł)");
+//        grid1.setItems(backendClient.fetchAllCurrencies());
         grid1.setItems(backendClient.fetchAllCurrencies());
-
-
         add(grid1);
 
         layout3.setWidth("100%");
