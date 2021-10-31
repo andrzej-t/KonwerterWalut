@@ -1,6 +1,7 @@
 package com.example.demo.views;
 
 import com.example.demo.client.BackendClient;
+import com.example.demo.domain.Calculator;
 import com.example.demo.domain.Currency;
 import com.example.demo.domain.Rates;
 import com.vaadin.flow.component.Component;
@@ -26,14 +27,18 @@ public class MainView extends VerticalLayout {
     BackendClient backendClient;
     @Autowired
     Currency currency;
+    @Autowired
+    Rates rates;
+    @Autowired
+    Calculator calculator;
 
     HorizontalLayout layout1 = new HorizontalLayout();
     Component component1 = new Text("KONWERTER WALUT");
 
     HorizontalLayout layout2 = new HorizontalLayout();
     IntegerField insertField = new IntegerField();
-    Select<String> currencyTwoSelect = new Select<>();
-    Select<String> labelSelect2 = new Select<>();
+    Select<String> currencyFromSelect = new Select<>();
+    Select<String> currencyToSelect = new Select<>();
     Button executeBtn = new Button();
     TextField resultField = new TextField();
 
@@ -56,16 +61,22 @@ public class MainView extends VerticalLayout {
         layout2.setWidth("100%");
         layout2.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         insertField.setLabel("Wprowadź kwotę: ");
-        currencyTwoSelect.setLabel("Konwertuj z: ");
-        labelSelect2.setLabel("Konwertuj na: ");
+        insertField.addValueChangeListener(event -> calculator.setAmount(insertField.getValue()));
+        currencyFromSelect.setLabel("Konwertuj z: ");
+        currencyFromSelect.setItems("EUR", "USD");
+        currencyFromSelect.addValueChangeListener(event -> calculator.setCurrencyFrom(currencyFromSelect.getValue()));
+        currencyToSelect.setLabel("Konwertuj na: ");
+        currencyToSelect.setItems("EUR", "USD");
+        currencyToSelect.addValueChangeListener(event -> calculator.setCurrencyTo(currencyToSelect.getValue()));
         executeBtn.setText("Przelicz");
         executeBtn.getElement().getStyle().set("margin", "36px 0px 0px 15px");
+        executeBtn.addClickListener(event -> resultField.setValue(String.valueOf(backendClient.fetchResult(calculator.getAmount(), calculator.getCurrencyFrom(), calculator.getCurrencyTo()))));
         executeBtn.getElement().getStyle()
                 .set("color", "#ffffff")
                 .set("background", "#33ab4b");
         resultField.setLabel("Wynik: ");
         resultField.setReadOnly(true);
-        layout2.add(insertField, currencyTwoSelect, labelSelect2, executeBtn, resultField);
+        layout2.add(insertField, currencyFromSelect, currencyToSelect, executeBtn, resultField);
         add(layout2);
 
         grid1.getStyle().set("border", "1px solid #52565b");
