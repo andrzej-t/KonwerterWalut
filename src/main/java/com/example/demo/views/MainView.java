@@ -63,10 +63,10 @@ public class MainView extends VerticalLayout {
         insertField.setLabel("Wprowadź kwotę: ");
         insertField.addValueChangeListener(event -> calculator.setAmount(insertField.getValue()));
         currencyFromSelect.setLabel("Konwertuj z: ");
-        currencyFromSelect.setItems("EUR", "USD");
+        currencyFromSelect.setItems("PLN","USD", "AUD", "CAD", "EUR", "HUF", "CHF", "GBP", "JPY", "CZK", "DKK", "NOK", "SEK", "XDR");
         currencyFromSelect.addValueChangeListener(event -> calculator.setCurrencyFrom(currencyFromSelect.getValue()));
         currencyToSelect.setLabel("Konwertuj na: ");
-        currencyToSelect.setItems("EUR", "USD");
+        currencyToSelect.setItems("PLN","USD", "AUD", "CAD", "EUR", "HUF", "CHF", "GBP", "JPY", "CZK", "DKK", "NOK", "SEK", "XDR");
         currencyToSelect.addValueChangeListener(event -> calculator.setCurrencyTo(currencyToSelect.getValue()));
         executeBtn.setText("Przelicz");
         executeBtn.getElement().getStyle().set("margin", "36px 0px 0px 15px");
