@@ -2,6 +2,7 @@ package com.example.demo.views;
 
 import com.example.demo.client.BackendClient;
 import com.example.demo.domain.Currency;
+import com.example.demo.domain.Rates;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -36,7 +37,7 @@ public class MainView extends VerticalLayout {
     Button executeBtn = new Button();
     TextField resultField = new TextField();
 
-    Grid<Currency> grid1 = new Grid<>(Currency.class);
+    Grid<Rates> grid1 = new Grid<>(Rates.class);
 
     HorizontalLayout layout3 = new HorizontalLayout();
     Component component2 = new Text("Wszystkie podane kursy i wyliczenia opierają się na danych udostępnionych przez NBP");
@@ -68,13 +69,11 @@ public class MainView extends VerticalLayout {
         add(layout2);
 
         grid1.getStyle().set("border", "1px solid #52565b");
-        grid1.setColumns("currencyName", "currencySymbol", "exchangeRate", "percentChange", "zlotyChange");
-        grid1.getColumnByKey("currencyName").setHeader("Nazwa waluty");
-        grid1.getColumnByKey("currencySymbol").setHeader("Symbol waluty");
-        grid1.getColumnByKey("exchangeRate").setHeader("Kurs");
-        grid1.getColumnByKey("percentChange").setHeader("Zmiana (%)");
-        grid1.getColumnByKey("zlotyChange").setHeader("Zmiana (zł)");
-//        grid1.setItems(backendClient.fetchAllCurrencies());
+        grid1.setColumns("currency", "code", "bid", "ask");
+        grid1.getColumnByKey("currency").setHeader("Nazwa waluty");
+        grid1.getColumnByKey("code").setHeader("Symbol waluty");
+        grid1.getColumnByKey("bid").setHeader("Kupno");
+        grid1.getColumnByKey("ask").setHeader("Sprzedaż");
         grid1.setItems(backendClient.fetchAllCurrencies());
         add(grid1);
 
