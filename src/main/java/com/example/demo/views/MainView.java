@@ -45,7 +45,7 @@ public class MainView extends VerticalLayout {
     Grid<Rates> grid1 = new Grid<>(Rates.class);
 
     HorizontalLayout layout3 = new HorizontalLayout();
-    Component component2 = new Text("Wszystkie podane kursy i wyliczenia opierają się na danych udostępnionych przez NBP");
+    Component component2 = new Text("Wszystkie podane kursy i wyliczenia opierają się na aktualnych danych z tabeli C udostępnionych przez NBP");
 
     public MainView(BackendClient backendClient) {
         this.backendClient=backendClient;
@@ -61,16 +61,30 @@ public class MainView extends VerticalLayout {
         layout2.setWidth("100%");
         layout2.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         insertField.setLabel("Wprowadź kwotę: ");
-        insertField.addValueChangeListener(event -> calculator.setAmount(insertField.getValue()));
+        insertField.addValueChangeListener(event -> {
+            calculator.setAmount(insertField.getValue());
+            executeBtn.setEnabled(!insertField.isEmpty() && !currencyFromSelect.isEmpty() && !currencyToSelect.isEmpty());
+        });
         currencyFromSelect.setLabel("Konwertuj z: ");
         currencyFromSelect.setItems("PLN","USD", "AUD", "CAD", "EUR", "HUF", "CHF", "GBP", "JPY", "CZK", "DKK", "NOK", "SEK", "XDR");
-        currencyFromSelect.addValueChangeListener(event -> calculator.setCurrencyFrom(currencyFromSelect.getValue()));
+        currencyFromSelect.addValueChangeListener(event -> {
+            calculator.setCurrencyFrom(currencyFromSelect.getValue());
+            executeBtn.setEnabled(!insertField.isEmpty() && !currencyFromSelect.isEmpty() && !currencyToSelect.isEmpty());
+        });
         currencyToSelect.setLabel("Konwertuj na: ");
         currencyToSelect.setItems("PLN","USD", "AUD", "CAD", "EUR", "HUF", "CHF", "GBP", "JPY", "CZK", "DKK", "NOK", "SEK", "XDR");
-        currencyToSelect.addValueChangeListener(event -> calculator.setCurrencyTo(currencyToSelect.getValue()));
+        currencyToSelect.addValueChangeListener(event -> {
+            calculator.setCurrencyTo(currencyToSelect.getValue());
+            executeBtn.setEnabled(!insertField.isEmpty() && !currencyFromSelect.isEmpty() && !currencyToSelect.isEmpty());
+        });
         executeBtn.setText("Przelicz");
         executeBtn.getElement().getStyle().set("margin", "36px 0px 0px 15px");
-        executeBtn.addClickListener(event -> resultField.setValue(String.valueOf(backendClient.fetchResult(calculator.getAmount(), calculator.getCurrencyFrom(), calculator.getCurrencyTo()))));
+        executeBtn.setEnabled(false);
+
+        executeBtn.addClickListener(event -> {
+            executeBtn.setEnabled(!insertField.isEmpty() && !currencyFromSelect.isEmpty() && !currencyToSelect.isEmpty());
+            resultField.setValue(String.valueOf(backendClient.fetchResult(calculator.getAmount(), calculator.getCurrencyFrom(), calculator.getCurrencyTo())));
+        });
         executeBtn.getElement().getStyle()
                 .set("color", "#ffffff")
                 .set("background", "#33ab4b");
